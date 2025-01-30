@@ -1,2 +1,3 @@
 # snippetbox
-Let people paste and share snippets of text
+
+Let people paste and share snippets of text.
