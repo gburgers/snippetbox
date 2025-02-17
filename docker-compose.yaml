@@ -1,0 +1,14 @@
+services:
+  mysql:
+    image: mysql:9.2
+    container_name: snippetbox
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: snippetbox
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./snippetbox_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

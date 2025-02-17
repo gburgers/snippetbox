@@ -1,30 +1,88 @@
 package main
 
 import (
-	"log"
+	"database/sql" // New import
+	"flag"
+	"log/slog"
 	"net/http"
+	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
+// Define an application struct to hold the application-wide dependencies for the
+// web application. For now we'll only include the structured logger, but we'll
+// add more to this as the build progresses.
+type application struct {
+	logger *slog.Logger
+}
+
 func main() {
-	// Use the http.NewServeMux() function to initialize a new servemux, then
-	// register the home function as the handler for the "/" URL pattern.
-	// Prefix the route patterns with the required HTTP method (for now, we will
-	// restrict all three routes to acting on GET requests).
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /snippet/view/{id}", snippetView)
-	mux.HandleFunc("GET /snippet/create", snippetCreate)
-	// Create the new route, which is restricted to POST requests only.
-	mux.HandleFunc("POST /snippet/create", snippetCreatePost)
+	// Define a new command-line flag with the name 'addr', a default value of ":4000"
+	// and some short help text explaining what the flag controls. The value of the
+	// flag will be stored in the addr variable at runtime.
+	addr := flag.String("addr", ":4000", "HTTP network address")
 
-	// Print a log message to say that the server is starting.
-	log.Print("starting server on :4000")
+	// Importantly, we use the flag.Parse() function to parse the command-line flag.
+	// This reads in the command-line flag value and assigns it to the addr
+	// variable. You need to call this *before* you use the addr variable
+	// otherwise it will always contain the default value of ":4000". If any errors are
+	// encountered during parsing the application will be terminated.
+	dsn := flag.String("dsn", "root:pass@(localhost:3306)/snippetbox?parseTime=true", "MySQL data source name")
+	flag.Parse()
+	// Use the slog.New() function to initialize a new structured logger, which
+	// writes to the standard out stream and uses the default settings.
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))
 
-	// Use the http.ListenAndServe() function to start a new web server. We pass in
-	// two parameters: the TCP network address to listen on (in this case ":4000", host/networkinterface:port)
-	// and the servemux we just created. If http.ListenAndServe() returns an error
-	// we use the log.Fatal() function to log the error message and exit. Note
-	// that any error returned by http.ListenAndServe() is always non-nil.
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
+	// The sql.Open() function initializes a new sql.DB object, which is essentially a
+	// pool of database connections.
+	// To keep the main() function tidy I've put the code for creating a connection
+	// pool into the separate openDB() function below. We pass openDB() the DSN
+	// from the command-line flag.
+	db, err := openDB(*dsn)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	// We also defer a call to db.Close(), so that the connection pool is closed
+	// before the main() function exits.
+	defer db.Close()
+
+	// Initialize a new instance of our application struct, containing the
+	// dependencies (for now, just the structured logger).
+	app := &application{
+		logger: logger,
+	}
+
+	// Use the Info() method to log the starting server message at Info severity
+	// (along with the listen address as an attribute).
+	logger.Info("starting server", slog.String("addr", *addr))
+
+	// Call the new app.routes() method to get the servemux containing our routes,
+	// and pass that to http.ListenAndServe().
+	// err := http.ListenAndServe(*addr, mux)
+	err = http.ListenAndServe(*addr, app.routes())
+	// And we also use the Error() method to log any error message returned by
+	// http.ListenAndServe() at Error severity (with no additional attributes),
+	// and then call os.Exit(1) to terminate the application with exit code 1.
+	logger.Error(err.Error())
+	os.Exit(1)
+}
+
+// The openDB() function wraps sql.Open() and returns a sql.DB connection pool
+// for a given DSN.
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
 }
