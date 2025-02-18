@@ -1,0 +1,8 @@
+.server.pid
+go.sum
+server
+snippetbox
+/cmd/web/server
+/cmd/web/web
+/cmd/web/main
+/snippetbox_data/
