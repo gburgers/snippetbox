@@ -1,7 +1,7 @@
-.server.pid
-go.sum
-server
-snippetbox
+/.server.pid
+/go.sum
+/server
+/snippetbox
 /cmd/web/server
 /cmd/web/web
 /cmd/web/main
