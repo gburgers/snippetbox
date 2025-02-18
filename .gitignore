@@ -4,6 +4,7 @@
 !*.*   # And don't ignore files with extensions
 
 # ignore specific files and directories
+/server
 /.server.pid
 /go.sum
 /snippetbox_data/
