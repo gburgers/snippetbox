@@ -6,5 +6,4 @@
 # ignore specific files and directories
 /server
 /.server.pid
-/go.sum
 /snippetbox_data/
