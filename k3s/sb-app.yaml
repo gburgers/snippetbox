@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: snippetbox-app
+  name: snippetbox-app
+  namespace: snippetbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: snippetbox-app
+  template:
+    metadata:
+      labels:
+        app: snippetbox-app
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - image: ghcr.io/gburgers/snippetbox:v0.0.6
+          name: snippetbox-app

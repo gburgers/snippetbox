@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sb-db
+spec:
+  selector:
+    matchLabels:
+      app: sb-db
+  template:
+    metadata:
+      labels:
+        app: sb-db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "pass"
+            - name: MYSQL_DATABASE
+              value: "snippetbox"
+          ports:
+            - containerPort: 3306

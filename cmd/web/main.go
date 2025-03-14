@@ -38,7 +38,7 @@ func main() {
 	// variable. You need to call this *before* you use the addr variable
 	// otherwise it will always contain the default value of ":4000". If any errors are
 	// encountered during parsing the application will be terminated.
-	dsn := flag.String("dsn", "root:pass@(localhost:3306)/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "root:pass@(sb-db-svc:3306)/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 	// Use the slog.New() function to initialize a new structured logger, which
 	// writes to the standard out stream and uses the default settings.
