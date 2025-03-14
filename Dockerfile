@@ -23,7 +23,7 @@ WORKDIR /app
 # Copy only the binary from the build stage
 COPY --from=builder /app/snippetbox .
 # Copy other runtime assets if needed
-COPY --from=builder /src/ui ./ui
+# COPY --from=builder /src/ui ./ui
 
 # Set the entry point
 ENTRYPOINT ["./snippetbox"]
