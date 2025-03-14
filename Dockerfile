@@ -8,10 +8,10 @@ RUN go mod download
 
 # Copy source files
 COPY cmd/web/*.go ./cmd/web/
-COPY internal/* ./internal/
-COPY internal/models/*.go ./internal/models/
-COPY internal/validator/*.go ./internal/validator/
-COPY ui/* ./ui/
+COPY internal/ ./internal/
+# COPY internal/models/*.go ./internal/models/
+# COPY internal/validator/*.go ./internal/validator/
+COPY ui/ ./ui/
 
 # Build the application
 RUN go build -o /app/snippetbox ./cmd/web
