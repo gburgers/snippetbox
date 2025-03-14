@@ -18,5 +18,5 @@ spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - image: ghcr.io/gburgers/snippetbox:v0.0.6
+        - image: ghcr.io/gburgers/snippetbox:v0.0.7
           name: snippetbox-app
