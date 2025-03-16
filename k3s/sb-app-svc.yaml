@@ -9,5 +9,5 @@ spec:
       protocol: TCP
       targetPort: 4000 # Pod port (your Go application)
   selector:
-    app: snippetbox-app # This should match the labels on your sb-app
+    app: sb-app # This should match the labels on your sb-app
   type: LoadBalancer

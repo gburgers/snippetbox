@@ -2,21 +2,34 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: snippetbox-app
-  name: snippetbox-app
+    app: sb-app
+  name: sb-app
   namespace: snippetbox
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: snippetbox-app
+      app: sb-app
   template:
     metadata:
       labels:
-        app: snippetbox-app
+        app: sb-app
     spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - image: ghcr.io/gburgers/snippetbox:v0.0.11
-          name: snippetbox-app
+        - image: ghcr.io/gburgers/snippetbox:v0.0.12
+          name: sb-app
+          env:
+            - name: DATABASE_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: app-db-credentials
+                  key: DATABASE_DSN
+          volumeMounts:
+            - name: nfs
+              mountPath: /nfs/app
+      volumes:
+        - name: nfs
+          persistentVolumeClaim:
+            claimName: sb-app-pvc

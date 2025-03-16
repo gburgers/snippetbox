@@ -1,0 +1,30 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-cluster
+  namespace: snippetbox # Use your app's namespace
+spec:
+  instances: 1
+
+  # PostgreSQL configuration
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      max_connections: "100"
+
+  # Storage configuration using local-path
+  storage:
+    storageClass: local-path
+    size: 5Gi
+
+  # Basic backup configuration
+  backup:
+    retentionPolicy: 7d
+
+  # Create a default database and user for your application
+  bootstrap:
+    initdb:
+      database: sb-database
+      owner: sb-user
+      secret:
+        name: pg-user-secret

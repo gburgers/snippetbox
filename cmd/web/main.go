@@ -11,10 +11,14 @@ import (
 
 	"github.com/gburgers/snippetbox/internal/models"
 
-	"github.com/alexedwards/scs/mysqlstore"
+	// "github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/postgresstore" // instead of mysqlstore
+	// instead of mysqlstore
+
 	"github.com/alexedwards/scs/v2"
 
-	_ "github.com/go-sql-driver/mysql"
+	// _ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq" // PostgreSQL driver
 )
 
 // Define an application struct to hold the application-wide dependencies for the
@@ -38,7 +42,8 @@ func main() {
 	// variable. You need to call this *before* you use the addr variable
 	// otherwise it will always contain the default value of ":4000". If any errors are
 	// encountered during parsing the application will be terminated.
-	dsn := flag.String("dsn", "root:pass@(sb-db-svc:3306)/snippetbox?parseTime=true", "MySQL data source name")
+	// dsn := flag.String("dsn", "root:pass@(sb-db-svc:3306)/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", os.Getenv("DATABASE_DSN"), "PostgreSQL data source name")
 	flag.Parse()
 	// Use the slog.New() function to initialize a new structured logger, which
 	// writes to the standard out stream and uses the default settings.
@@ -71,7 +76,8 @@ func main() {
 	// lifetime of 12 hours (so that sessions automatically expire 12 hours
 	// after first being created).
 	sessionManager := scs.New()
-	sessionManager.Store = mysqlstore.New(db)
+	// sessionManager.Store = mysqlstore.New(db)
+	sessionManager.Store = postgresstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
 
 	// Initialize a new instance of our application struct, containing the
@@ -101,7 +107,7 @@ func main() {
 // The openDB() function wraps sql.Open() and returns a sql.DB connection pool
 // for a given DSN.
 func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
