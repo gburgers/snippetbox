@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - image: ghcr.io/gburgers/snippetbox:v0.0.16
+        - image: ghcr.io/gburgers/snippetbox:v0.0.17
           name: sb-app
           env:
             - name: DATABASE_DSN
@@ -26,10 +26,10 @@ spec:
                 secretKeyRef:
                   name: app-db-credentials
                   key: DATABASE_DSN
-          volumeMounts:
-            - name: nfs
-              mountPath: /nfs/app
-      volumes:
-        - name: nfs
-          persistentVolumeClaim:
-            claimName: sb-app-pvc
+          # volumeMounts:
+          # - name: nfs
+          # mountPath: /nfs/app
+      # volumes:
+      # - name: nfs
+      # persistentVolumeClaim:
+      # claimName: sb-app-pvc
