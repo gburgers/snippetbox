@@ -1,6 +1,6 @@
 module github.com/gburgers/snippetbox
 
-go 1.23.4
+go 1.24
 
 require (
 	github.com/alexedwards/scs/postgresstore v0.0.0-20250212122300-421ef1d8611c
