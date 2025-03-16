@@ -27,8 +27,12 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 	// Write the SQL statement we want to execute. I've split it over two lines
 	// for readability (which is why it's surrounded with backquotes instead
 	// of normal double quotes).
+	// stmt := `INSERT INTO snippets (title, content, created, expires)
+	// VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
+
+	// To PostgreSQL syntax:
 	stmt := `INSERT INTO snippets (title, content, created, expires)
-    VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
+    VALUES($1, $2, CURRENT_TIMESTAMP AT TIME ZONE 'UTC', (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') + ($3 || ' days')::interval)`
 
 	// Use the Exec() method on the embedded connection pool to execute the
 	// statement. The first parameter is the SQL statement, followed by the
@@ -56,8 +60,12 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 func (m *SnippetModel) Get(id int) (Snippet, error) {
 	// Write the SQL statement we want to execute. Again, I've split it over two
 	// lines for readability.
+	// stmt := `SELECT id, title, content, created, expires FROM snippets
+	// WHERE expires > UTC_TIMESTAMP() AND id = ?`
+
+	// To PostgreSQL syntax:
 	stmt := `SELECT id, title, content, created, expires FROM snippets
-    WHERE expires > UTC_TIMESTAMP() AND id = ?`
+    WHERE expires > (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') AND id = $1`
 
 	// Use the QueryRow() method on the connection pool to execute our
 	// SQL statement, passing in the untrusted id variable as the value for the
@@ -93,8 +101,12 @@ func (m *SnippetModel) Get(id int) (Snippet, error) {
 // This will return the 10 most recently created snippets.
 func (m *SnippetModel) Latest() ([]Snippet, error) {
 	// Write the SQL statement we want to execute.
+	// stmt := `SELECT id, title, content, created, expires FROM snippets
+	// WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+
+	// To PostgreSQL syntax:
 	stmt := `SELECT id, title, content, created, expires FROM snippets
-    WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+    WHERE expires > (CURRENT_TIMESTAMP AT TIME ZONE 'UTC') ORDER BY id DESC LIMIT 10`
 
 	// Use the Query() method on the connection pool to execute our
 	// SQL statement. This returns a sql.Rows resultset containing the result of
