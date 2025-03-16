@@ -9,8 +9,6 @@ RUN go mod download
 # Copy source files
 COPY cmd/web/*.go ./cmd/web/
 COPY internal/ ./internal/
-# COPY internal/models/*.go ./internal/models/
-# COPY internal/validator/*.go ./internal/validator/
 COPY ui/ ./ui/
 
 # Build the application
@@ -23,7 +21,6 @@ WORKDIR /app
 # Copy only the binary from the build stage
 COPY --from=builder /app/snippetbox .
 # Copy other runtime assets if needed
-# COPY --from=builder /src/ui ./ui
 
 # Set the entry point
 ENTRYPOINT ["./snippetbox"]
