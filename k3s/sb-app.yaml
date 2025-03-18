@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - image: ghcr.io/gburgers/snippetbox:v0.0.20
+        - image: ghcr.io/gburgers/snippetbox:v0.1.8
           name: sb-app
           env:
             - name: DATABASE_DSN
