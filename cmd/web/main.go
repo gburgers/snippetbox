@@ -49,10 +49,10 @@ func main() {
 	// Check LOCAL OR K3S POSTGRESQL DSN!!!!!!
 
 	// !!!!postgresQL localhost docker-compose!!!!
-	// dsn := flag.String("dsn", "postgresql://sb-user:pass@localhost:5432/sb-database?sslmode=disable", "PostgreSQL data source name")
+	dsn := flag.String("dsn", "postgresql://sb-user:pass@localhost:5432/sb-database?sslmode=disable", "PostgreSQL data source name")
 
 	// kubernetes k3s
-	dsn := flag.String("dsn", os.Getenv("DATABASE_DSN"), "PostgreSQL data source name")
+	// dsn := flag.String("dsn", os.Getenv("DATABASE_DSN"), "PostgreSQL data source name")
 
 	flag.Parse()
 	// Use the slog.New() function to initialize a new structured logger, which
