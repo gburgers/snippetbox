@@ -42,8 +42,16 @@ func main() {
 	// variable. You need to call this *before* you use the addr variable
 	// otherwise it will always contain the default value of ":4000". If any errors are
 	// encountered during parsing the application will be terminated.
+
+	// mysql:
 	// dsn := flag.String("dsn", "root:pass@(sb-db-svc:3306)/snippetbox?parseTime=true", "MySQL data source name")
-	dsn := flag.String("dsn", os.Getenv("DATABASE_DSN"), "PostgreSQL data source name")
+
+	// postgresQL localhost docker-compose
+	dsn := flag.String("dsn", "postgresql://sb-user:pass@localhost:5432/sb-database?sslmode=disable", "PostgreSQL data source name")
+
+	// kubernetes k3s
+	// dsn := flag.String("dsn", os.Getenv("DATABASE_DSN"), "PostgreSQL data source name")
+
 	flag.Parse()
 	// Use the slog.New() function to initialize a new structured logger, which
 	// writes to the standard out stream and uses the default settings.
