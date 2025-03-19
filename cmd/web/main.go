@@ -46,17 +46,23 @@ func main() {
 	// mysql:
 	// dsn := flag.String("dsn", "root:pass@(sb-db-svc:3306)/snippetbox?parseTime=true", "MySQL data source name")
 
+	// Use the $DATABASE_DSN environment variable if set, otherwise fall back to local development DSN
+	defaultDSN := "postgresql://sb-user:pass@localhost:5432/sb-database?sslmode=disable"
+	if envDSN := os.Getenv("DATABASE_DSN"); envDSN != "" {
+		defaultDSN = envDSN
+	}
+	dsn := flag.String("dsn", defaultDSN, "PostgreSQL data source name")
+	flag.Parse()
+
 	// Check LOCAL OR K3S POSTGRESQL DSN!!!!!!
-
 	// !!!!postgresQL localhost docker-compose!!!!
-	dsn := flag.String("dsn", "postgresql://sb-user:pass@localhost:5432/sb-database?sslmode=disable", "PostgreSQL data source name")
-
+	// dsn := flag.String("dsn", "postgresql://sb-user:pass@localhost:5432/sb-database?sslmode=disable", "PostgreSQL data source name")
 	// kubernetes k3s
 	// dsn := flag.String("dsn", os.Getenv("DATABASE_DSN"), "PostgreSQL data source name")
-
-	flag.Parse()
+	// flag.Parse()
 	// Use the slog.New() function to initialize a new structured logger, which
 	// writes to the standard out stream and uses the default settings.
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))
 
 	// The sql.Open() function initializes a new sql.DB object, which is essentially a
