@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sb-app-staging
+  name: sb-app-staging
+  namespace: snippetbox-staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sb-app-staging
+  template:
+    metadata:
+      labels:
+        app: sb-app-staging
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - image: ghcr.io/gburgers/snippetbox:staging-44ad3d4
+          name: sb-app-staging
+          env:
+            - name: DATABASE_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: app-db-credentials
+                  key: DATABASE_DSN
+          # volumeMounts:
+          # - name: nfs
+          # mountPath: /nfs/app
+      # volumes:
+      # - name: nfs
+      # persistentVolumeClaim:
+      # claimName: sb-app-pvc

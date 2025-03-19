@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sb-app-staging-svc
+  namespace: snippetbox-staging
+spec:
+  ports:
+    - port: 9500 # Service port (external access)
+      protocol: TCP
+      targetPort: 4000 # Pod port (your Go application)
+  selector:
+    app: sb-app-staging # This should match the labels on your sb-app
+  type: LoadBalancer
