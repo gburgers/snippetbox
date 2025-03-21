@@ -22,5 +22,14 @@ WORKDIR /app
 COPY --from=builder /app/snippetbox .
 # Copy other runtime assets if needed
 
+# Create user and group
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Set ownership and permission
+RUN chown -R appuser:appgroup /app
+
+# Switch to user
+USER appuser
+
 # Set the entry point
 ENTRYPOINT ["./snippetbox"]
