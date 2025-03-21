@@ -22,5 +22,14 @@ WORKDIR /app
 COPY --from=builder /app/snippetbox .
 # Copy other runtime assets if needed
 
+# Create user and group
+RUN groupadd -r www-data && useradd -g www-data
+
+# Set ownership and permission
+RUN chown -R www-data:www-data /app
+
+# Switch to user
+USER www-data
+
 # Set the entry point
 ENTRYPOINT ["./snippetbox"]
