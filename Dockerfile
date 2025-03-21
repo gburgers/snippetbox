@@ -23,7 +23,7 @@ COPY --from=builder /app/snippetbox .
 # Copy other runtime assets if needed
 
 # Create user and group
-RUN addgroup www-data && adduser -g www-data
+RUN addgroup -S www-data && adduser -S www-data -G www-data
 
 # Set ownership and permission
 RUN chown -R www-data:www-data /app
