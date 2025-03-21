@@ -23,13 +23,13 @@ COPY --from=builder /app/snippetbox .
 # Copy other runtime assets if needed
 
 # Create user and group
-RUN addgroup -S www-data && adduser -S www-data -G www-data
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Set ownership and permission
-RUN chown -R www-data:www-data /app
+RUN chown -R appuser:appgroup /app
 
 # Switch to user
-USER www-data
+USER appuser
 
 # Set the entry point
 ENTRYPOINT ["./snippetbox"]
